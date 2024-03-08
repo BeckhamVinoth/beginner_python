@@ -1,5 +1,3 @@
-# todo in python using if else blocks
-
 import time
 current_time = time.strftime("%m-%d-%y : %H:%M:%S")
 print("Current time (time):", current_time)
