@@ -13,7 +13,7 @@ while show_todo:
         todo = f"{user_action[4:]}\n"
         todo_list = functions.get_todos('todos.txt')
         todo_list.append(todo)
-        functions.write_todos('todos.txt', todo_list)
+        functions.write_todos(todo_list, 'todos.txt')
 
     elif user_action.startswith('show'):
         todo_list = functions.get_todos('todos.txt')
@@ -27,7 +27,7 @@ while show_todo:
             index = int(user_action[5:])
             new_todo = input('Enter new todo : ')
             todo_list[index-1] = f"{new_todo}\n"
-            functions.write_todos('todos.txt', todo_list)
+            functions.write_todos(todo_list, 'todos.txt')
 
         except ValueError:
             print('Query not found !!!')
@@ -38,7 +38,7 @@ while show_todo:
             todo_list = functions.get_todos('todos.txt')
             item = int(user_action[9:])
             todo_list.pop(item-1)
-            functions.write_todos('todos.txt', todo_list)
+            functions.write_todos(todo_list, 'todos.txt')
 
         except IndexError:
             print('Query not found !!!')
