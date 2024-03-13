@@ -22,7 +22,7 @@ jobs:
       uses: actions/labeler@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        labels: Needs review
+        sync-labels: Needs review
 
     - name: Check if PR needs changes
       id: check_changes
@@ -38,7 +38,7 @@ jobs:
       uses: actions/labeler@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        labels: Needs changes
+        sync-labels: Needs changes
 
     - name: Check for conflicts
       id: check_conflicts
@@ -54,4 +54,4 @@ jobs:
       uses: actions/labeler@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        labels: Needs rebase
+        sync-labels: Needs rebase
