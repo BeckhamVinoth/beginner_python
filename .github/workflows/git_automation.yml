@@ -1,18 +1,57 @@
-name: Label issues
+name: Pull Request Labels
+   
 on:
-  issues:
-    types:
-      - reopened
-      - opened
+  pull_request:
+    types: [opened, edited, reopened, review_requested, ready_for_review]
+   
 jobs:
-  label_issues:
+  label_pull_request:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
-      - run: gh issue edit "$NUMBER" --add-label "$LABELS"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          NUMBER: ${{ github.event.issue.number }}
-          LABELS: Needs review
+    - name: Check if PR needs review
+      id: check_review
+      run: |
+        if [[ $(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" | jq -r '.[] | select(.state == "APPROVED") | .user.login') == "" ]]; then
+          echo "::set-output name=needs_review::true"
+        else
+          echo "::set-output name=needs_review::false"
+        fi
+   
+    - name: Add label - Needs review
+      if: steps.check_review.outputs.needs_review == 'true'
+      uses: actions/labeler@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        sync-labels: Needs review
+   
+    - name: Check if PR needs changes
+      id: check_changes
+      run: |
+        if [[ $(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" | jq -r '.[] | select(.state == "COMMENTED" or .state == "CHANGES_REQUESTED") | .user.login') != "" ]]; then
+          echo "::set-output name=needs_changes::true"
+        else
+          echo "::set-output name=needs_changes::false"
+        fi
+   
+    - name: Add label - Needs changes
+      if: steps.check_changes.outputs.needs_changes == 'true'
+      uses: actions/labeler@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        sync-labels: Needs changes
+   
+    - name: Check for conflicts
+      id: check_conflicts
+      run: |
+        if git fetch origin && git checkout origin/main && git merge-base --is-ancestor HEAD ${{ github.event.pull_request.head.sha }}; then
+          echo "::set-output name=has_conflicts::false"
+        else
+          echo "::set-output name=has_conflicts::true"
+        fi
+   
+    - name: Add label - Needs rebase
+      if: steps.check_conflicts.outputs.has_conflicts == 'true'
+      uses: actions/labeler@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        sync-labels: Needs rebase
