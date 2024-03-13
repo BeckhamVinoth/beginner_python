@@ -47,5 +47,5 @@ while show_todo:
     elif user_action.startswith('exit'):
         break
     else:
-        print('Query not found !!!')
+        print('Query not found !')
 print('Ok, Bye')
