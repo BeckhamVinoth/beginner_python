@@ -7,11 +7,17 @@ input_box = psg.InputText(tooltip="Enter todo", key='todo')
 add_btn = psg.Button("Add")
 
 edit_btn = psg.Button("Edit")
+complete_btn = psg.Button("Complete")
+exit_btn = psg.Button("Exit")
 list_box = psg.Listbox(values=functions.get_todos(), key='todos',
-                       enable_events=True, size=(45, 10))
+                       enable_events=True, size=(25, 10))
 
 window = psg.Window('My ToDo App',
-                    layout=[[label], [input_box, add_btn], [list_box, edit_btn]],
+                    layout=[[label],
+                            [input_box, add_btn],
+                            [list_box, edit_btn, complete_btn],
+                            [exit_btn]
+                            ],
                     font=('Helvetica', 20))
 while True:
     event, value = window.read()
@@ -22,8 +28,6 @@ while True:
             todos.append(new_todo)
             functions.write_todos(todos)
             window['todos'].update(values=todos)
-        case psg.WIN_CLOSED:
-            break
         case 'todos':
             curr_todo = value['todos'][0]
             window['todo'].update(value=curr_todo)
@@ -33,9 +37,19 @@ while True:
 
             todos = functions.get_todos()
             index = todos.index(todo_to_edit)
-            todos[index] = new_todo
+            todos[index] = new_todo + '\n'
             functions.write_todos(todos)
             window['todos'].update(values=todos)
+        case 'Complete':
+            todo_comp = value['todos'][0]
+            todos = functions.get_todos()
+            todos.remove(todo_comp)
+            functions.write_todos(todos)
+            window['todos'].update(values=todos)
+        case 'Exit':
+            break
+        case psg.WIN_CLOSED:
+            exit()
 
 
 window.close()
