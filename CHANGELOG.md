@@ -1,5 +1,7 @@
 # Change Log
 
+* Zip files to designated folders
+* Complete and Exit buttons added.
 * removed.
 * removed.
 * removed.
