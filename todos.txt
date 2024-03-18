@@ -2,5 +2,5 @@ Wake up
 Gym
 Eat
 Work
-Sleep
-Repeat
+Bye
+Ok pa
