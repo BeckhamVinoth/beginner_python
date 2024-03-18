@@ -15,8 +15,13 @@ def add_new():
 sl.title('My ToDo App')
 sl.subheader('We can add and complete ur day today items here')
 
-for todo in todos:
-    sl.checkbox(todo)
+for i, todo in enumerate(todos):
+    checkbox = sl.checkbox(todo, key=todo)
+    if checkbox:
+        todos.pop(i)
+        functions.write_todos(todos)
+        del streamlit.session_state[todo]
+        streamlit.experimental_rerun()
 
 sl.text_input(label='input',
               label_visibility='hidden',
